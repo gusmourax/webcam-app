@@ -48,29 +48,41 @@ const createWindow = (): BrowserWindow => {
     return mainWindow;
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', () => {
-    const window = createWindow();
+const singleInstanceLock = app.requestSingleInstanceLock();
 
-    const autoLaunch = new AutoLaunch({
-        name: 'Webcam MP',
-        path: app.getPath('exe')
+if (!singleInstanceLock) {
+    app.quit();
+} else {
+    let window: BrowserWindow = null;
+
+    app.on('second-instance', () => {
+        if (window) {
+            if (window.isMinimized()) window.restore();
+            window.focus();
+        }
     })
 
-    autoLaunch.isEnabled().then((isEnabled) => {
-        if (!isEnabled) autoLaunch.enable();
-    })
+    app.on('ready', () => {
+        window = createWindow();
 
-    setInterval(() => {
-        window.setAlwaysOnTop(true);
-    }, 10000);
+        const autoLaunch = new AutoLaunch({
+            name: 'Webcam MP',
+            path: app.getPath('exe')
+        })
 
-    window.on('close', (event) => {
-        event.preventDefault();
-    })
-});
+        autoLaunch.isEnabled().then((isEnabled) => {
+            if (!isEnabled) autoLaunch.enable();
+        })
+
+        setInterval(() => {
+            window.setAlwaysOnTop(true);
+        }, 10000);
+
+        window.on('close', (event) => {
+            event.preventDefault();
+        })
+    });
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
