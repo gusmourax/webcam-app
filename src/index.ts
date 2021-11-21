@@ -65,6 +65,7 @@ if (!singleInstanceLock) {
     app.on('ready', () => {
         window = createWindow();
         window.focus();
+        window.focusOnWebView();
         const display = screen.getPrimaryDisplay();
         const { height: screenHeight, width: screenWidth } = display.bounds;
 
@@ -78,11 +79,7 @@ if (!singleInstanceLock) {
         })
 
         setInterval(() => {
-            if (!window.isAlwaysOnTop()) {
-                window.setAlwaysOnTop(true);
-                window.restore();
-                window.focus();
-            }
+            window.setAlwaysOnTop(true);
         }, 10000);
 
         window.on('close', (event) => {
