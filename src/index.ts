@@ -26,7 +26,7 @@ const createWindow = (): BrowserWindow => {
         height,
         width,
         x: screenWidth - width,
-        y: screenHeight - height,
+        y: screenHeight - (height + 60),
         frame: false,
         alwaysOnTop: true,
         minimizable: false,
