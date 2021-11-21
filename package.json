@@ -1,6 +1,6 @@
 {
   "name": "webcam-app",
-  "productName": "Webcam-MP",
+  "productName": "Webcam MP",
   "version": "1.0.0",
   "description": "Webcam - Minha Portaria",
   "main": ".webpack/main",
