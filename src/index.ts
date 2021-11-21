@@ -64,6 +64,8 @@ if (!singleInstanceLock) {
 
     app.on('ready', () => {
         window = createWindow();
+        const display = screen.getPrimaryDisplay();
+        const { height: screenHeight, width: screenWidth } = display.bounds;
 
         const autoLaunch = new AutoLaunch({
             name: 'Webcam MP',
@@ -80,6 +82,29 @@ if (!singleInstanceLock) {
 
         window.on('close', (event) => {
             event.preventDefault();
+        })
+
+        window.on('move', () => {
+            const { height, width, x, y } = window.getBounds();
+
+            /** left-top */
+            if (y < 0 && x < 0) return window.setPosition(0, 0);
+            /** right-top */
+            if (y < 0 && (x + width) >= screenWidth) return window.setPosition((screenWidth - width), 0);
+            /** right-bottom */
+            if ((y + height) >= screenHeight && (x + width) >= screenWidth)
+                return window.setPosition((screenWidth - width), (screenHeight - height))
+            /** left-bottom */
+            if ((y + height) >= screenHeight && x < 0) return window.setPosition(0, (screenHeight - height));
+
+            /** top */
+            if (y < 0) return window.setPosition(x, 0);
+            /** left */
+            if (x < 0) return window.setPosition(0, y);
+            /** bottom */
+            if ((y + height) >= screenHeight) return window.setPosition(x, (screenHeight - height));
+            /** right */
+            if ((x + width) >= screenWidth) return window.setPosition((screenWidth - width), y);
         })
     });
 }
@@ -100,6 +125,3 @@ app.on('activate', () => {
         createWindow();
     }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
