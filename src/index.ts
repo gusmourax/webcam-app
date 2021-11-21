@@ -53,6 +53,10 @@ const createWindow = (): BrowserWindow => {
 app.on('ready', () => {
     const window = createWindow();
 
+    setInterval(() => {
+        window.setAlwaysOnTop(true);
+    }, 10000);
+
     window.on('close', (event) => {
         event.preventDefault();
     })
